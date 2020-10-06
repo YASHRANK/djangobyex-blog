@@ -1,0 +1,26 @@
+<nav class="pagination is-rounded" role="navigation" aria-label="pagination">
+
+    {% if page.has_previous %}
+    <a class="pagination-previous" href="?page={{ page.previous_page_number }}">Previous</a>
+    {% endif %}
+    {% if page.has_next %}
+    <a class="pagination-next" href="?page={{ page.next_page_number }}">Next</a>
+    {% endif %}
+    <ul class="pagination-list">
+
+        {% if page.number != 1%}
+        <li><a class="pagination-link" href="?page=1" aria-label="Goto page 1">1</a></li>
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        {% endif %}
+
+        <li><a class="pagination-link is-current" aria-label="Page {{ page.number }}"
+                aria-current="page">{{ page.number }}</a></li>
+
+
+        {% if page.number != page.paginator.num_pages%}
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        <li><a class="pagination-link" href="?page={{ page.paginator.num_pages }}">{{ page.paginator.num_pages }}</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>

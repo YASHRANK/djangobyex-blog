@@ -1,0 +1,51 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Share a post{% endblock %}
+{% block content %}
+<div class="columns is-centered">
+    <div class="column is-6">
+
+        {% if sent %}
+        <h1 class="is-size-3">E-mail successfully sent</h1>
+        <p>
+            "{{ post.title }}" was successfully sent to {{ form.cleaned_data.to }}.
+        </p>
+        <br>
+        <div class="field is-grouped">
+            <div class="control">
+                <a class="button is-link" href="{% url 'blog:post_list' %}">All Post</a>
+            </div>
+            <div class="control">
+                <a class="button is-link is-light" href="{{ post.get_absolute_url }}">Back</a>
+            </div>
+        </div>
+
+        {% else %}
+        <h1 class="is-size-1 is-title">"{{ post.title }}"</h1>
+        <h1 class="is-size-4 is-title">share by e-mail</h1>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form%}
+            <div class="field">
+                <label class="label">{{field.label}}</label>
+                <div class="control">
+                    {{field}}
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <button type="submit" class="button is-link">Submit</button>
+                </div>
+                <div class="control">
+                    <a class="button is-link is-light" href="{{ post.get_absolute_url }}">Cancel</a>
+                </div>
+            </div>
+        </form>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

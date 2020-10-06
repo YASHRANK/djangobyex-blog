@@ -1,0 +1,93 @@
+{% extends "blog/base.html" %}
+{% load blog_tags %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+<div class="columns">
+    <div class="column is-8">
+
+        {% if query %}
+
+        <h1 class="is-size-3">Posts containing <strong>"{{ query }}"</strong></h1>
+        <h3 class="is-size-4">
+            {% with results.count as total_results %}
+            Found <strong>{{ total_results }}</strong> result{{ total_results|pluralize }}
+            {% endwith %}
+        </h3>
+        <br>
+
+        {% for post in results %}
+
+        <div class="media-content">
+            <div class="content">
+                <h3 class="is-title">
+                    <a href="{{ post.get_absolute_url }}">
+                        {{ post.title }}
+                    </a>
+                </h3>
+                {% if post.tags %}
+
+                <div class="tags">
+                    {% for tag in post.tags.all %}
+
+                    <span class="tag is-light">
+                        <a class="has-text-black" href="{% url 'blog:post_list_by_tag' tag.slug %}">{{ tag.name }}</a>
+                    </span>
+
+                    {% endfor %}
+
+                </div>
+                {% endif %}
+                <p>
+                    <strong>{{ post.author }}</strong> <small>{{ post.publish.date }}</small>
+                    {{ post.body|truncatewords_html:30 }}
+                </p>
+            </div>
+        </div>
+        <hr>
+        {% empty %}
+        <p class="is-size-3">There are no results for your query.</p>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+
+
+    <div class="column is-4">
+
+        <!-- search post  -->
+        <div class="box">
+            <h1 class="is-size-4">Search for posts</h1>
+            <form class="my-1" action="{% url 'blog:post_search' %}" method="get">
+                <div class="field">
+                    <div class="control">
+                        {{form.as_p}}
+                    </div>
+                    <br>
+                    <div class="field">
+                        <p class="control">
+                            <button class="button is-warning" type="submit">Search</button>
+                        </p>
+                    </div>
+            </form>
+        </div>
+        <hr>
+        <div class="field is-grouped">
+            <div class="control">
+                <a class="button is-link" href="{% url 'blog:post_list' %}">All Post</a>
+            </div>
+        </div>
+        <h3 class="is-size-4">Search By Tags</h3>
+        <br>
+        <div class="tags">
+            {% for tag in tags %}
+            <span class="tag is-light">
+                <a class="has-text-black" href="{% url 'blog:post_list_by_tag' tag.slug %}">{{ tag.name }}</a>
+            </span>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

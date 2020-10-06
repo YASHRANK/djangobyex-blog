@@ -1,0 +1,110 @@
+{% extends "blog/base.html" %}
+{% load blog_tags %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+
+{% block content %}
+
+<div class="columns is-vcentered">
+
+    <div class="column is-6">
+        <h1 class="is-size-1">{{ post.title }}</h1>
+        <p class="has-text-weight-light is-family-monospace">
+            Published <small>{{ post.publish.date }}</small> by {{ post.author }}
+        </p>
+        <br>
+        {% if post.tags %}
+
+        <div class="tags">
+            {% for tag in post.tags.all %}
+
+            <span class="tag is-light">
+                <a class="has-text-black" href="{% url 'blog:post_list_by_tag' tag.slug %}">{{ tag.name }}</a>
+            </span>
+
+            {% endfor %}
+
+        </div>
+        {% endif %}
+
+        <p>
+            {{ post.body }}
+        </p>
+
+
+    </div>
+
+
+    <div class="column is-6">
+        <div class="box">
+            <h2 class="is-size-4">Similar posts</h2>
+            <hr>
+            <div class="content">
+                <ul>
+                    {% for post in similar_posts %}
+                    <li>
+                        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                    </li>
+
+                    {% empty %}
+                    There are no similar posts yet.
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<br>
+
+
+<div class="columns">
+
+    <div class="column is-6">
+        {% with comments.count as total_comments %}
+        <h2 class="is-size-4">
+            {{ total_comments }} comment{{ total_comments|pluralize }}
+        </h2>
+        {% endwith %}
+        <br>
+        {% for comment in comments %}
+        <div>
+            <p>
+                <strong>{{ comment.name }}</strong>
+                <small>{{ comment.created.date }}</small>
+            </p>
+            {{ comment.body|linebreaks }}
+        </div>
+
+        {% empty %}
+        <p>There are no comments yet.</p>
+        {% endfor %}
+        <br>
+        <div class="field is-grouped">
+            <div class="control">
+                <a class="button is-link" href="{% url 'blog:post_share' post.slug %}">Share</a>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="column is-4">
+        {% if new_comment %}
+        <h2 class="is-size-4">Your comment has been added.</h2>
+        {% else %}
+        <h2 class="is-size-4">Add a new comment</h2>
+        <form method="post">
+            {{ comment_form.as_p }}
+            {% csrf_token %}
+            <button class="button is-link is-light my-4" type="submit">Add comment</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+
+
+{% endblock %}
